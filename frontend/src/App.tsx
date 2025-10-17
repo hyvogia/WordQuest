@@ -1,13 +1,56 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { createContext, useState } from "react";
+import { BrowserRouter, Link, Route, Routes, useNavigate } from "react-router";
 //import Hello from "./components/Hello";
 
+interface IUser {
+  username: string;
+  password: string;
+}
+
+interface IContext {
+  username: IUser[],
+  setUserName: (user: IUser[]) => void;
+}
+
+const initialContext = {
+  username: [],
+  setUserName: () => []
+}
+
+const UsersContext = createContext<IContext>(initialContext);
+
+const users = [
+  {
+    username: "Andrew",
+    password: "andrew123"
+  },
+  {
+    username: "Bill",
+    password: "bill123"
+  }
+]
+
 function Login() {
+  const [name, setName] = useState("");
+  const [pass, setPass] = useState("");
+  const navigate = useNavigate();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (name === "Andrew" && pass === "andrew123") {
+      navigate("/game");
+    } else {
+      alert("Invalid credentials");
+    }
+  }
+  
   return (
-    <div className="m-2 flex flex-col items-center justify-center min-h-screen">
+    <div
+      className="m-2 flex flex-col items-center justify-center min-h-screen"
+      onSubmit={handleSubmit}>
       <h1>Login</h1>
-      <form className="m-2 flex flex-col items-center justify-center">
-        <input className="p-2 m-2 border rounded" placeholder="username" />
-        <input className="p-2 m-2 border rounded" placeholder="password" />
+      <form className="m-2 flex flex-col items-center justify-center" >
+        <input className="p-2 m-2 border rounded" type="text" value={name} onChange={e => setName(e.target.value)} placeholder="username" />
+        <input className="p-2 m-2 border rounded" type="text" value={pass} onChange={e => setPass(e.target.value)} placeholder="password" />
         <button className="m-2 border p-2 rounded">Join Game</button>
       </form>
     </div>

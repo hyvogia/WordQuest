@@ -27,6 +27,39 @@ function SignUp() {
   )
 }
 
+function Game() {
+  return (
+    <div className="m-2 flex flex-row justify-center">
+      <div>
+        <button className="m-2 p-2 border rounded">Back</button>
+      </div>
+      <div>
+        <h6 className="m-2 p-2">Name</h6>
+      </div>
+      <div className="m-2 flex flex-col items-center justify-center min-h-screen">
+        <h1 className="m-2">Question Title</h1>
+        <p className="m-2">Question content</p>
+        <div>
+          <div className="m-2">
+            <button className="m-2 p-2 border rounded">Question A</button>
+            <button className="m-2 p-2 border rounded">Question B</button>
+          </div>
+          <div className="m-2">
+            <button className="m-2 p-2 border rounded">Question C</button>
+            <button className="m-2 p-2 border rounded">Question D</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h6 className="m-2 p-2">Score</h6>
+      </div>
+      <div>
+
+      </div>
+    </div>
+  )
+}
+
 function Main() {
 
   return (
@@ -34,6 +67,7 @@ function Main() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/game" element={<Game />} />
       </Routes>
     </BrowserRouter>
   )

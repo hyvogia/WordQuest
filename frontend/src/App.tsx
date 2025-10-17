@@ -60,6 +60,26 @@ function Game() {
   )
 }
 
+function Summary() {
+  return (
+    <div className="m-2 flex flex-col items-center justify-center min-h-screen">
+      <h1>Final Result</h1>
+      <div className="m-2 p-10 flex flex-row items-center justify-center border rounded">
+        <div className="m-10">
+          <p>Answered correct</p>
+        </div>
+        <div>
+          <p>Answered incorrect</p>
+        </div>
+      </div>
+      <div>
+          <button className="m-2 border p-2 rounded">Exit Game</button>
+          <button className="m-2 border p-2 rounded">Next Level</button>
+      </div>
+    </div>
+  )
+}
+
 function Main() {
 
   return (
@@ -68,6 +88,7 @@ function Main() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/game" element={<Game />} />
+        <Route path="/summary" element={<Summary />} />
       </Routes>
     </BrowserRouter>
   )

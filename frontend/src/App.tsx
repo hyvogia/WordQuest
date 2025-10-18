@@ -127,10 +127,15 @@ function SignUp() {
 function Game() {
   const [answer, setAnswer] = useState("");
   const [score, setScore] = useState(0);
+  const [questionState, setQuestionState] = useState(0);
   const handleAnswer = (e: React.FormEvent) => {
     e.preventDefault();
-    if (answer === questions[0].answer) {
-      setScore(prev => prev + 1)
+    if (answer === questions[questionState].answer) {
+      setScore(prev => prev + 1);
+      setQuestionState(prev => prev + 1);
+    } else {
+      alert("Wrong answer!")
+      setQuestionState(prev => prev + 1);
     }
   }
   return (
@@ -145,24 +150,24 @@ function Game() {
         <div className="m-2 flex flex-col items-center justify-center min-h-screen">
           <h1 className="m-2">
             {
-              questions[0].question
+              questions[questionState].question
             }
           </h1>
           <div className="flex flex-row">
             <div className="m-2 flex flex-col items-center">
               <button className="m-2 p-2 border rounded" id="A" onClick={() => setAnswer("A")}>
-                {questions[0].options.find(o => o.key === "A")?.value}
+                {questions[questionState].options.find(o => o.key === "A")?.value}
               </button>
-              <button className="m-2 p-2 border rounded" id="B" onClick={(e) => setAnswer((e.target as HTMLButtonElement).id)}>
-                {questions[0].options.find(o => o.key === "B")?.value}
+              <button className="m-2 p-2 border rounded" id="B" onClick={() => setAnswer("B")}>
+                {questions[questionState].options.find(o => o.key === "B")?.value}
               </button>
             </div>
             <div className="m-2 flex flex-col items-center">
-              <button className="m-2 p-2 border rounded" id="C" onClick={(e) => setAnswer((e.target as HTMLButtonElement).id)}>
-                {questions[0].options.find(o => o.key === "C")?.value}
+              <button className="m-2 p-2 border rounded" id="C" onClick={() => setAnswer("C")}>
+                {questions[questionState].options.find(o => o.key === "C")?.value}
               </button>
-              <button className="m-2 p-2 border rounded" id="D" onClick={(e) => setAnswer((e.target as HTMLButtonElement).id)}>
-                {questions[0].options.find(o => o.key === "D")?.value}
+              <button className="m-2 p-2 border rounded" id="D" onClick={() => setAnswer("D")}>
+                {questions[questionState].options.find(o => o.key === "D")?.value}
               </button>
             </div>
           </div>

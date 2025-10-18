@@ -83,7 +83,58 @@ const questions = [
   }
 ];
 
-
+const hardQuestions = [
+  {
+    question: "Find the synonym of 'abundant':",
+    options: [
+      { key: "A", value: "Scarce" },
+      { key: "B", value: "Plentiful" },
+      { key: "C", value: "Limited" },
+      { key: "D", value: "Tiny" }
+    ],
+    answer: "B"
+  },
+  {
+    question: "Find the synonym of 'candid':",
+    options: [
+      { key: "A", value: "Dishonest" },
+      { key: "B", value: "Secretive" },
+      { key: "C", value: "Frank" },
+      { key: "D", value: "Reserved" }
+    ],
+    answer: "C"
+  },
+  {
+    question: "Find the synonym of 'diligent':",
+    options: [
+      { key: "A", value: "Hardworking" },
+      { key: "B", value: "Lazy" },
+      { key: "C", value: "Careless" },
+      { key: "D", value: "Tired" }
+    ],
+    answer: "A"
+  },
+  {
+    question: "Find the synonym of 'melancholy':",
+    options: [
+      { key: "A", value: "Joyful" },
+      { key: "B", value: "Cheerful" },
+      { key: "C", value: "Sadness" },
+      { key: "D", value: "Excitement" }
+    ],
+    answer: "C"
+  },
+  {
+    question: "Find the synonym of 'obstinate':",
+    options: [
+      { key: "A", value: "Flexible" },
+      { key: "B", value: "Stubborn" },
+      { key: "C", value: "Gentle" },
+      { key: "D", value: "Calm" }
+    ],
+    answer: "B"
+  }
+];
 
 function Login() {
   const [name, setName] = useState("");
@@ -128,6 +179,7 @@ function Game() {
   const [answer, setAnswer] = useState("");
   const [score, setScore] = useState(0);
   const [questionState, setQuestionState] = useState(0);
+  const navigate = useNavigate();
   const handleAnswer = (e: React.FormEvent) => {
     e.preventDefault();
     if (answer === questions[questionState].answer) {
@@ -136,6 +188,9 @@ function Game() {
     } else {
       alert("Wrong answer!")
       setQuestionState(prev => prev + 1);
+    }
+    if (questionState === questions.length-1) {
+      navigate("/summary");
     }
   }
   return (

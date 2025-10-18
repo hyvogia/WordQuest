@@ -12,12 +12,12 @@ interface IContext {
   setUserName: (user: IUser[]) => void;
 }
 
-const initialContext = {
+const initialUserContext = {
   username: [],
   setUserName: () => []
 }
 
-const UsersContext = createContext<IContext>(initialContext);
+const UsersContext = createContext<IContext>(initialUserContext);
 
 const users = [
   {
@@ -29,6 +29,61 @@ const users = [
     password: "bill123"
   }
 ]
+
+const questions = [
+  {
+    question: "Find the synonym of 'happy':",
+    options: [
+      { key: "A", value: "Joyful" },
+      { key: "B", value: "Angry" },
+      { key: "C", value: "Sad" },
+      { key: "D", value: "Tired" }
+    ],
+    answer: "A"
+  },
+  {
+    question: "Find the synonym of 'brave':",
+    options: [
+      { key: "A", value: "Cowardly" },
+      { key: "B", value: "Fearless" },
+      { key: "C", value: "Weak" },
+      { key: "D", value: "Shy" }
+    ],
+    answer: "B"
+  },
+  {
+    question: "Find the synonym of 'begin':",
+    options: [
+      { key: "A", value: "Stop" },
+      { key: "B", value: "Continue" },
+      { key: "C", value: "Start" },
+      { key: "D", value: "Delay" }
+    ],
+    answer: "C"
+  },
+  {
+    question: "Find the synonym of 'quick':",
+    options: [
+      { key: "A", value: "Fast" },
+      { key: "B", value: "Slow" },
+      { key: "C", value: "Late" },
+      { key: "D", value: "Careful" }
+    ],
+    answer: "A"
+  },
+  {
+    question: "Find the synonym of 'beautiful':",
+    options: [
+      { key: "A", value: "Ugly" },
+      { key: "B", value: "Pretty" },
+      { key: "C", value: "Plain" },
+      { key: "D", value: "Rough" }
+    ],
+    answer: "B"
+  }
+];
+
+
 
 function Login() {
   const [name, setName] = useState("");
@@ -45,10 +100,9 @@ function Login() {
 
   return (
     <div
-      className="m-2 flex flex-col items-center justify-center min-h-screen"
-      onSubmit={handleSubmit}>
+      className="m-2 flex flex-col items-center justify-center min-h-screen">
       <h1>Login</h1>
-      <form className="m-2 flex flex-col items-center justify-center" >
+      <form className="m-2 flex flex-col items-center justify-center" onSubmit={handleSubmit}>
         <input className="p-2 m-2 border rounded" type="text" value={name} onChange={e => setName(e.target.value)} placeholder="username" />
         <input className="p-2 m-2 border rounded" type="text" value={pass} onChange={e => setPass(e.target.value)} placeholder="password" />
         <button className="m-2 border p-2 rounded">Join Game</button>
@@ -71,30 +125,51 @@ function SignUp() {
 }
 
 function Game() {
+  const [answer, setAnswer] = useState("");
+  const [score, setScore] = useState(0);
+  const handleAnswer = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (answer === questions[0].answer) {
+      setScore(prev => prev + 1)
+    }
+  }
   return (
     <div className="m-2 flex flex-row justify-center">
       <div>
         <button className="m-2 p-2 border rounded">Back</button>
       </div>
       <div>
-        <h6 className="m-2 p-2">Name</h6>
-      </div>
-      <div className="m-2 flex flex-col items-center justify-center min-h-screen">
-        <h1 className="m-2">Question Title</h1>
-        <p className="m-2">Question content</p>
-        <div>
-          <div className="m-2">
-            <button className="m-2 p-2 border rounded">Question A</button>
-            <button className="m-2 p-2 border rounded">Question B</button>
-          </div>
-          <div className="m-2">
-            <button className="m-2 p-2 border rounded">Question C</button>
-            <button className="m-2 p-2 border rounded">Question D</button>
+          <h6 className="m-2 p-2">Name</h6>
+        </div>
+      <form onSubmit={handleAnswer}>
+        <div className="m-2 flex flex-col items-center justify-center min-h-screen">
+          <h1 className="m-2">
+            {
+              questions[0].question
+            }
+          </h1>
+          <div className="flex flex-row">
+            <div className="m-2 flex flex-col items-center">
+              <button className="m-2 p-2 border rounded" id="A" onClick={() => setAnswer("A")}>
+                {questions[0].options.find(o => o.key === "A")?.value}
+              </button>
+              <button className="m-2 p-2 border rounded" id="B" onClick={(e) => setAnswer((e.target as HTMLButtonElement).id)}>
+                {questions[0].options.find(o => o.key === "B")?.value}
+              </button>
+            </div>
+            <div className="m-2 flex flex-col items-center">
+              <button className="m-2 p-2 border rounded" id="C" onClick={(e) => setAnswer((e.target as HTMLButtonElement).id)}>
+                {questions[0].options.find(o => o.key === "C")?.value}
+              </button>
+              <button className="m-2 p-2 border rounded" id="D" onClick={(e) => setAnswer((e.target as HTMLButtonElement).id)}>
+                {questions[0].options.find(o => o.key === "D")?.value}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
       <div>
-        <h6 className="m-2 p-2">Score</h6>
+        <h6 className="m-2 p-2">Score: {score}</h6>
       </div>
       <div>
 

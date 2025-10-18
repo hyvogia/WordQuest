@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { BrowserRouter, Link, Route, Routes, useNavigate } from "react-router";
 //import Hello from "./components/Hello";
 
@@ -9,7 +9,7 @@ interface IUser {
 
 interface IContext {
   username: IUser[],
-  setUserName: (user: IUser[]) => void;
+  setUserName: (user: IUser[]) => void
 }
 
 const initialUserContext = {
@@ -18,6 +18,28 @@ const initialUserContext = {
 }
 
 const UsersContext = createContext<IContext>(initialUserContext);
+
+interface IQuestionContext {
+  level: boolean,
+  setLevel: (level: boolean) => void
+}
+
+const initQuestionContext = {
+  level: false,
+  setLevel: () => false
+}
+
+const QuestionsContext = createContext<IQuestionContext>(initQuestionContext);
+
+function QuestionsProvider({ children }: { children: React.ReactNode }) {
+  const [level, setLvl] = useState(false);
+  const setLevel = (lvl: boolean) => setLvl(lvl);
+  return (
+    <QuestionsContext.Provider value={{ level, setLevel }}>
+      {children}
+    </QuestionsContext.Provider>
+  )
+}
 
 const users = [
   {
@@ -180,16 +202,19 @@ function Game() {
   const [score, setScore] = useState(0);
   const [questionState, setQuestionState] = useState(0);
   const navigate = useNavigate();
+  const { level } = useContext(QuestionsContext);
+  const activeArray = level ? hardQuestions : questions;
+
   const handleAnswer = (e: React.FormEvent) => {
     e.preventDefault();
-    if (answer === questions[questionState].answer) {
+    if (answer === activeArray[questionState].answer) {
       setScore(prev => prev + 1);
       setQuestionState(prev => prev + 1);
     } else {
       alert("Wrong answer!")
       setQuestionState(prev => prev + 1);
     }
-    if (questionState === questions.length-1) {
+    if (questionState === activeArray.length - 1) {
       navigate("/summary");
     }
   }
@@ -199,30 +224,30 @@ function Game() {
         <button className="m-2 p-2 border rounded">Back</button>
       </div>
       <div>
-          <h6 className="m-2 p-2">Name</h6>
-        </div>
+        <h6 className="m-2 p-2">Name</h6>
+      </div>
       <form onSubmit={handleAnswer}>
         <div className="m-2 flex flex-col items-center justify-center min-h-screen">
           <h1 className="m-2">
             {
-              questions[questionState].question
+              activeArray[questionState].question
             }
           </h1>
           <div className="flex flex-row">
             <div className="m-2 flex flex-col items-center">
               <button className="m-2 p-2 border rounded" id="A" onClick={() => setAnswer("A")}>
-                {questions[questionState].options.find(o => o.key === "A")?.value}
+                {activeArray[questionState].options.find(o => o.key === "A")?.value}
               </button>
               <button className="m-2 p-2 border rounded" id="B" onClick={() => setAnswer("B")}>
-                {questions[questionState].options.find(o => o.key === "B")?.value}
+                {activeArray[questionState].options.find(o => o.key === "B")?.value}
               </button>
             </div>
             <div className="m-2 flex flex-col items-center">
               <button className="m-2 p-2 border rounded" id="C" onClick={() => setAnswer("C")}>
-                {questions[questionState].options.find(o => o.key === "C")?.value}
+                {activeArray[questionState].options.find(o => o.key === "C")?.value}
               </button>
               <button className="m-2 p-2 border rounded" id="D" onClick={() => setAnswer("D")}>
-                {questions[questionState].options.find(o => o.key === "D")?.value}
+                {activeArray[questionState].options.find(o => o.key === "D")?.value}
               </button>
             </div>
           </div>
@@ -239,6 +264,20 @@ function Game() {
 }
 
 function Summary() {
+  const [final, setFinal] = useState("");
+  const navigate = useNavigate();
+  const [switchStat, setSwitchStat] = useState(false);
+  const { setLevel } = useContext(QuestionsContext);
+
+  const handleAnswer = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (final === "Exit") {
+      navigate("/login");
+    } else {
+      setLevel(switchStat)
+      navigate("/game")
+    }
+  }
   return (
     <div className="m-2 flex flex-col items-center justify-center min-h-screen">
       <h1>Final Result</h1>
@@ -250,10 +289,20 @@ function Summary() {
           <p>Answered incorrect</p>
         </div>
       </div>
-      <div>
-        <button className="m-2 border p-2 rounded">Exit Game</button>
-        <button className="m-2 border p-2 rounded">Next Level</button>
-      </div>
+      <form onSubmit={handleAnswer}>
+        <div>
+          <button
+            className="m-2 border p-2 rounded"
+            onClick={() => setFinal("Exit")}>
+            Exit Game
+          </button>
+          <button
+            className="m-2 border p-2 rounded"
+            onClick={() => setSwitchStat(true)}>
+            Next Level
+          </button>
+        </div>
+      </form>
     </div>
   )
 }
@@ -262,12 +311,14 @@ function Main() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/game" element={<Game />} />
-        <Route path="/summary" element={<Summary />} />
-      </Routes>
+      <QuestionsProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/game" element={<Game />} />
+          <Route path="/summary" element={<Summary />} />
+        </Routes>
+      </QuestionsProvider>
     </BrowserRouter>
   )
 }

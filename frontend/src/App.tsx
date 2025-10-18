@@ -36,13 +36,13 @@ function Login() {
   const navigate = useNavigate();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name === "Andrew" && pass === "andrew123") {
-      navigate("/game");
-    } else {
-      alert("Invalid credentials");
+    for (let i = 0; i < users.length; i++) {
+      if (name === users[i].username && pass === users[i].password) {
+        navigate("/game");
+      }
     }
   }
-  
+
   return (
     <div
       className="m-2 flex flex-col items-center justify-center min-h-screen"
@@ -116,8 +116,8 @@ function Summary() {
         </div>
       </div>
       <div>
-          <button className="m-2 border p-2 rounded">Exit Game</button>
-          <button className="m-2 border p-2 rounded">Next Level</button>
+        <button className="m-2 border p-2 rounded">Exit Game</button>
+        <button className="m-2 border p-2 rounded">Next Level</button>
       </div>
     </div>
   )

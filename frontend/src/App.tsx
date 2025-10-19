@@ -19,18 +19,6 @@ const initialUserContext = {
 
 const UsersContext = createContext<IContext>(initialUserContext);
 
-interface IQuestionContext {
-  level: boolean,
-  setLevel: (level: boolean) => void
-}
-
-const initQuestionContext = {
-  level: false,
-  setLevel: () => false
-}
-
-const QuestionsContext = createContext<IQuestionContext>(initQuestionContext);
-
 interface IScoreContext {
   score: number,
   setScore: React.Dispatch<React.SetStateAction<number>>;
@@ -38,21 +26,10 @@ interface IScoreContext {
 
 const initScoreContext = {
   score: 0,
-  setScore: () => {}
+  setScore: () => { }
 }
 
 const ScoreContext = createContext<IScoreContext>(initScoreContext);
-
-
-function QuestionsProvider({ children }: { children: React.ReactNode }) {
-  const [level, setLvl] = useState(false);
-  const setLevel = (lvl: boolean) => setLvl(lvl);
-  return (
-    <QuestionsContext.Provider value={{ level, setLevel }}>
-      {children}
-    </QuestionsContext.Provider>
-  )
-}
 
 function ScoreProvider({ children }: { children: React.ReactNode }) {
   const [score, setScore] = useState(0);
@@ -130,62 +107,6 @@ const questions = {
   ]
 };
 
-const hardQuestions = {
-  active: false,
-  content: [
-    {
-      question: "Find the synonym of 'abundant':",
-      options: [
-        { key: "A", value: "Scarce" },
-        { key: "B", value: "Plentiful" },
-        { key: "C", value: "Limited" },
-        { key: "D", value: "Tiny" }
-      ],
-      answer: "B"
-    },
-    {
-      question: "Find the synonym of 'candid':",
-      options: [
-        { key: "A", value: "Dishonest" },
-        { key: "B", value: "Secretive" },
-        { key: "C", value: "Frank" },
-        { key: "D", value: "Reserved" }
-      ],
-      answer: "C"
-    },
-    {
-      question: "Find the synonym of 'diligent':",
-      options: [
-        { key: "A", value: "Hardworking" },
-        { key: "B", value: "Lazy" },
-        { key: "C", value: "Careless" },
-        { key: "D", value: "Tired" }
-      ],
-      answer: "A"
-    },
-    {
-      question: "Find the synonym of 'melancholy':",
-      options: [
-        { key: "A", value: "Joyful" },
-        { key: "B", value: "Cheerful" },
-        { key: "C", value: "Sadness" },
-        { key: "D", value: "Excitement" }
-      ],
-      answer: "C"
-    },
-    {
-      question: "Find the synonym of 'obstinate':",
-      options: [
-        { key: "A", value: "Flexible" },
-        { key: "B", value: "Stubborn" },
-        { key: "C", value: "Gentle" },
-        { key: "D", value: "Calm" }
-      ],
-      answer: "B"
-    }
-  ]
-};
-
 function Login() {
   const [name, setName] = useState("");
   const [pass, setPass] = useState("");
@@ -239,21 +160,17 @@ function Game() {
   const { setScore } = useContext(ScoreContext);
   const [questionState, setQuestionState] = useState(0);
   const navigate = useNavigate();
-  const { level } = useContext(QuestionsContext);
-  const activeArray = level ? hardQuestions : questions;
 
   const handleAnswer = (e: React.FormEvent) => {
     e.preventDefault();
-    if (answer === activeArray.content[questionState].answer) {
+    if (answer === questions.content[questionState].answer) {
       setScore(prev => prev + 1);
       setQuestionState(prev => prev + 1);
     } else {
       alert("Wrong answer!")
       setQuestionState(prev => prev + 1);
     }
-    if (questionState === activeArray.content.length - 1) {
-      if (questions) questions.active = true;
-      if (hardQuestions) hardQuestions.active = true;
+    if (questionState === questions.content.length - 1) {
       navigate("/summary");
     }
   }
@@ -269,24 +186,24 @@ function Game() {
         <div className="m-2 flex flex-col items-center justify-center min-h-screen">
           <h1 className="m-2">
             {
-              activeArray.content[questionState].question
+              questions.content[questionState].question
             }
           </h1>
           <div className="flex flex-row">
             <div className="m-2 flex flex-col items-center">
               <button className="m-2 p-2 border rounded" id="A" onClick={() => setAnswer("A")}>
-                {activeArray.content[questionState].options.find(o => o.key === "A")?.value}
+                {questions.content[questionState].options.find(o => o.key === "A")?.value}
               </button>
               <button className="m-2 p-2 border rounded" id="B" onClick={() => setAnswer("B")}>
-                {activeArray.content[questionState].options.find(o => o.key === "B")?.value}
+                {questions.content[questionState].options.find(o => o.key === "B")?.value}
               </button>
             </div>
             <div className="m-2 flex flex-col items-center">
               <button className="m-2 p-2 border rounded" id="C" onClick={() => setAnswer("C")}>
-                {activeArray.content[questionState].options.find(o => o.key === "C")?.value}
+                {questions.content[questionState].options.find(o => o.key === "C")?.value}
               </button>
               <button className="m-2 p-2 border rounded" id="D" onClick={() => setAnswer("D")}>
-                {activeArray.content[questionState].options.find(o => o.key === "D")?.value}
+                {questions.content[questionState].options.find(o => o.key === "D")?.value}
               </button>
             </div>
           </div>
@@ -305,8 +222,6 @@ function Game() {
 function Summary() {
   const [final, setFinal] = useState("");
   const navigate = useNavigate();
-  const [switchStat, setSwitchStat] = useState(false);
-  const { setLevel } = useContext(QuestionsContext);
   let allAnswered: boolean = false;
   console.log(allAnswered);
   if (questions.active === true && questions.active === true) {
@@ -318,7 +233,6 @@ function Summary() {
     if (final === "Exit") {
       navigate("/login");
     } else {
-      setLevel(switchStat)
       navigate("/game")
     }
   }
@@ -340,13 +254,11 @@ function Summary() {
             onClick={() => setFinal("Exit")}>
             Exit Game
           </button>
-          {!allAnswered &&
-            <button
-              className="m-2 border p-2 rounded"
-              onClick={() => setSwitchStat(true)}>
-              Next Level
-            </button>
-          }
+          <button
+            className="m-2 border p-2 rounded"
+            onClick={() => setFinal("Restart")}>
+            Restart
+          </button>
         </div>
       </form>
     </div>
@@ -358,14 +270,12 @@ function Main() {
   return (
     <BrowserRouter>
       <ScoreProvider>
-        <QuestionsProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/game" element={<Game />} />
-            <Route path="/summary" element={<Summary />} />
-          </Routes>
-        </QuestionsProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/game" element={<Game />} />
+          <Route path="/summary" element={<Summary />} />
+        </Routes>
       </ScoreProvider>
     </BrowserRouter>
   )

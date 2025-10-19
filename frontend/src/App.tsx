@@ -221,6 +221,7 @@ function Game() {
 
 function Summary() {
   const [final, setFinal] = useState("");
+  const { score , setScore } = useContext(ScoreContext);
   const navigate = useNavigate();
   let allAnswered: boolean = false;
   console.log(allAnswered);
@@ -231,8 +232,10 @@ function Summary() {
   const handleAnswer = (e: React.FormEvent) => {
     e.preventDefault();
     if (final === "Exit") {
+      setScore(prev => prev = 0);
       navigate("/login");
     } else {
+      setScore(prev => prev = 0);
       navigate("/game")
     }
   }
@@ -240,12 +243,7 @@ function Summary() {
     <div className="m-2 flex flex-col items-center justify-center min-h-screen">
       <h1>Final Result</h1>
       <div className="m-2 p-10 flex flex-row items-center justify-center border rounded">
-        <div className="m-10">
-          <p>Answered correct</p>
-        </div>
-        <div>
-          <p>Answered incorrect</p>
-        </div>
+        <p>You've got {score}/{questions.content.length}</p>
       </div>
       <form onSubmit={handleAnswer}>
         <div>

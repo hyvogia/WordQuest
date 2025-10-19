@@ -9,7 +9,7 @@ interface IUser {
 
 interface IUsersContext {
   currentUser: IUser | null;
-  setCurrentUser: (user: IUser) => void;
+  setCurrentUser: (user: IUser | null) => void;
 }
 
 const initialUsersContext: IUsersContext = {
@@ -54,7 +54,6 @@ const users: IUser[] = [
   { username: "Bill", password: "bill123" },
   { username: "Carol", password: "carol123" }
 ];
-
 
 const questions = {
   active: false,
@@ -171,7 +170,7 @@ function Game() {
 
   const { score } = useContext(ScoreContext);
   const { setScore } = useContext(ScoreContext);
-  const { currentUser } = useContext(UsersContext);
+  const { currentUser, setCurrentUser } = useContext(UsersContext);
 
   const navigate = useNavigate();
 
@@ -188,10 +187,27 @@ function Game() {
       navigate("/summary");
     }
   }
+
+  const handleExit = () => {
+    const ok = window.confirm("You are about to log out. Your progress will be loss. Do you want to continue?");
+    if (!ok) return;
+    // reset user context
+    setCurrentUser(null);
+    // optional resets for a clean logout
+    setScore(0);
+    setQuestionState(0);
+    setAnswer("");
+    navigate("/login");
+  };
+
   return (
     <div className="m-2 flex flex-row justify-center">
       <div>
-        <button className="m-2 p-2 border rounded">Back</button>
+        <button
+          className="m-2 p-2 border rounded"
+          onClick={handleExit}>
+          Exit
+        </button>
       </div>
       <div>
         <h6 className="m-2 p-2">Name: {currentUser?.username ?? "Guest"}</h6>

@@ -31,6 +31,19 @@ const initQuestionContext = {
 
 const QuestionsContext = createContext<IQuestionContext>(initQuestionContext);
 
+interface IScoreContext {
+  score: number,
+  setScore: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const initScoreContext = {
+  score: 0,
+  setScore: () => {}
+}
+
+const ScoreContext = createContext<IScoreContext>(initScoreContext);
+
+
 function QuestionsProvider({ children }: { children: React.ReactNode }) {
   const [level, setLvl] = useState(false);
   const setLevel = (lvl: boolean) => setLvl(lvl);
@@ -38,6 +51,15 @@ function QuestionsProvider({ children }: { children: React.ReactNode }) {
     <QuestionsContext.Provider value={{ level, setLevel }}>
       {children}
     </QuestionsContext.Provider>
+  )
+}
+
+function ScoreProvider({ children }: { children: React.ReactNode }) {
+  const [score, setScore] = useState(0);
+  return (
+    <ScoreContext.Provider value={{ score, setScore }}>
+      {children}
+    </ScoreContext.Provider>
   )
 }
 
@@ -213,7 +235,8 @@ function SignUp() {
 
 function Game() {
   const [answer, setAnswer] = useState("");
-  const [score, setScore] = useState(0);
+  const { score } = useContext(ScoreContext);
+  const { setScore } = useContext(ScoreContext);
   const [questionState, setQuestionState] = useState(0);
   const navigate = useNavigate();
   const { level } = useContext(QuestionsContext);
@@ -334,14 +357,16 @@ function Main() {
 
   return (
     <BrowserRouter>
-      <QuestionsProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/game" element={<Game />} />
-          <Route path="/summary" element={<Summary />} />
-        </Routes>
-      </QuestionsProvider>
+      <ScoreProvider>
+        <QuestionsProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/game" element={<Game />} />
+            <Route path="/summary" element={<Summary />} />
+          </Routes>
+        </QuestionsProvider>
+      </ScoreProvider>
     </BrowserRouter>
   )
 }

@@ -7,17 +7,26 @@ interface IUser {
   password: string;
 }
 
-interface IContext {
-  username: IUser[],
-  setUserName: (user: IUser[]) => void
+interface IUsersContext {
+  currentUser: IUser | null;
+  setCurrentUser: (user: IUser) => void;
 }
 
-const initialUserContext = {
-  username: [],
-  setUserName: () => []
-}
+const initialUsersContext: IUsersContext = {
+  currentUser: null,
+  setCurrentUser: () => { }
+};
 
-const UsersContext = createContext<IContext>(initialUserContext);
+const UsersContext = createContext<IUsersContext>(initialUsersContext);
+
+function UsersProvider({ children }: { children: React.ReactNode }) {
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+  return (
+    <UsersContext.Provider value={{ currentUser, setCurrentUser }}>
+      {children}
+    </UsersContext.Provider>
+  );
+}
 
 interface IScoreContext {
   score: number,
@@ -40,16 +49,12 @@ function ScoreProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-const users = [
-  {
-    username: "Andrew",
-    password: "andrew123"
-  },
-  {
-    username: "Bill",
-    password: "bill123"
-  }
-]
+const users: IUser[] = [
+  { username: "Andrew", password: "andrew123" },
+  { username: "Bill", password: "bill123" },
+  { username: "Carol", password: "carol123" }
+];
+
 
 const questions = {
   active: false,
@@ -110,13 +115,19 @@ const questions = {
 function Login() {
   const [name, setName] = useState("");
   const [pass, setPass] = useState("");
+
+  const { setCurrentUser } = useContext(UsersContext);
+
   const navigate = useNavigate();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    for (let i = 0; i < users.length; i++) {
-      if (name === users[i].username && pass === users[i].password) {
-        navigate("/game");
-      }
+    const found = users.find(u => u.username === name && u.password === pass);
+    if (found) {
+      setCurrentUser(found);
+      navigate("/game");
+    } else {
+      alert("Invalid credentials");
     }
   }
 
@@ -156,9 +167,12 @@ function SignUp() {
 
 function Game() {
   const [answer, setAnswer] = useState("");
+  const [questionState, setQuestionState] = useState(0);
+
   const { score } = useContext(ScoreContext);
   const { setScore } = useContext(ScoreContext);
-  const [questionState, setQuestionState] = useState(0);
+  const { currentUser } = useContext(UsersContext);
+
   const navigate = useNavigate();
 
   const handleAnswer = (e: React.FormEvent) => {
@@ -180,7 +194,7 @@ function Game() {
         <button className="m-2 p-2 border rounded">Back</button>
       </div>
       <div>
-        <h6 className="m-2 p-2">Name</h6>
+        <h6 className="m-2 p-2">Name: {currentUser?.username ?? "Guest"}</h6>
       </div>
       <form onSubmit={handleAnswer}>
         <div className="m-2 flex flex-col items-center justify-center min-h-screen">
@@ -221,8 +235,12 @@ function Game() {
 
 function Summary() {
   const [final, setFinal] = useState("");
-  const { score , setScore } = useContext(ScoreContext);
+
+  const { score, setScore } = useContext(ScoreContext);
+  const { currentUser } = useContext(UsersContext);
+
   const navigate = useNavigate();
+
   let allAnswered: boolean = false;
   console.log(allAnswered);
   if (questions.active === true && questions.active === true) {
@@ -241,7 +259,7 @@ function Summary() {
   }
   return (
     <div className="m-2 flex flex-col items-center justify-center min-h-screen">
-      <h1>Final Result</h1>
+      <h1>Final Result for {currentUser?.username ?? "Player"}</h1>
       <div className="m-2 p-10 flex flex-row items-center justify-center border rounded">
         <p>You've got {score}/{questions.content.length}</p>
       </div>
@@ -254,8 +272,8 @@ function Summary() {
           </button>
           <button
             className="m-2 border p-2 rounded"
-            onClick={() => setFinal("Restart")}>
-            Restart
+            onClick={() => setFinal("Continue")}>
+            Continue
           </button>
         </div>
       </form>
@@ -267,14 +285,16 @@ function Main() {
 
   return (
     <BrowserRouter>
-      <ScoreProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/game" element={<Game />} />
-          <Route path="/summary" element={<Summary />} />
-        </Routes>
-      </ScoreProvider>
+      <UsersProvider>
+        <ScoreProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/game" element={<Game />} />
+            <Route path="/summary" element={<Summary />} />
+          </Routes>
+        </ScoreProvider>
+      </UsersProvider>
     </BrowserRouter>
   )
 }

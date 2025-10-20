@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { BrowserRouter, Link, Route, Routes, useNavigate } from "react-router";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router";
 //import Hello from "./components/Hello";
 
 interface IUser {
@@ -114,6 +114,7 @@ const questions = {
 function Login() {
   const [name, setName] = useState("");
   const [pass, setPass] = useState("");
+  const [login, setLogin] = useState("");
 
   const { setCurrentUser } = useContext(UsersContext);
 
@@ -125,7 +126,11 @@ function Login() {
     if (found) {
       setCurrentUser(found);
       navigate("/game");
-    } else {
+    } 
+    else if (login === "Sign Up") {
+      navigate("/signup");
+    }
+    else {
       alert("Invalid credentials");
     }
   }
@@ -145,7 +150,19 @@ function Login() {
           type="text" value={pass}
           onChange={e => setPass(e.target.value)}
           placeholder="password" />
-        <button className="m-2 border p-2 rounded">Join Game</button>
+          
+          <div>
+            <button
+              className="m-2 border p-2 rounded"
+              onClick={() => setLogin("Sign Up")}>
+              Sign Up
+            </button>
+            <button
+              className="m-2 border p-2 rounded"
+              onClick={() => setLogin("Join Game")}>
+              Join Game
+            </button>
+        </div>
       </form>
     </div>
   )

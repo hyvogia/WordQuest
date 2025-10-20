@@ -9,16 +9,21 @@ const resOk = (res: Response, data: any) => res.json({ success: true, data });
 const resErr = (res: Response, message: string, code = 400) =>
   res.status(code).json({ success: false, message });
 
+
+
 /* -------- Users -------- */
 export const getAllUsers = (_req: Request, res: Response) => {
   resOk(res, users.map(u => ({ username: u.username })));
 };
 
 export const getUser = (req: Request, res: Response) => {
-  const { username } = req.params;
-  const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
-  if (!user) return resErr(res, "User not found", 404);
-  resOk(res, { username: user.username });
+  const username = req.params.username;
+  console.log("GET /users/:username =>", username);
+
+  const found = users.find(u => u.username === username);
+  if (!found) return res.status(404).json({ success: false, message: "User not found" });
+
+  res.json({ success: true, data: found });
 };
 
 export const createUser = (req: Request, res: Response) => {

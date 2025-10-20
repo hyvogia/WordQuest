@@ -9,11 +9,12 @@ export const getAllUsers = (_req, res) => {
     resOk(res, users.map(u => ({ username: u.username })));
 };
 export const getUser = (req, res) => {
-    const { username } = req.params;
-    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
-    if (!user)
-        return resErr(res, "User not found", 404);
-    resOk(res, { username: user.username });
+    const username = req.params.username;
+    console.log("GET /users/:username =>", username);
+    const found = users.find(u => u.username === username);
+    if (!found)
+        return res.status(404).json({ success: false, message: "User not found" });
+    res.json({ success: true, data: found });
 };
 export const createUser = (req, res) => {
     const { username, password } = req.body;

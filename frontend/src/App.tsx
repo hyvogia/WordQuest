@@ -51,8 +51,8 @@ function ScoreProvider({ children }: { children: React.ReactNode }) {
 
 let users: IUser[] = [
   { username: "Andrew", password: "andrew123" },
-  { username: "Bill",    password: "bill123"  },
-  { username: "Carol",   password: "carol123" }
+  { username: "Bill", password: "bill123" },
+  { username: "Carol", password: "carol123" }
 ];
 
 const questions = {
@@ -271,20 +271,44 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const found = users.find(u => u.username === name && u.password === pass);
     if (login === "Sign Up") {
-      setName(prev => prev = "");
-      setPass(prev => prev = "");
+      setName("");
+      setPass("");
       navigate("/signup");
+      return;
     }
-    else if (found) {
+
+    if (!name || !pass) {
+      alert("Error: Invalid input");
+      return
+    }
+
+    try {
+      const res = await fetch(`http://localhost:3001/api/v1/users/${encodeURIComponent(name)}`, {
+        method: "GET"
+      });
+
+      if (!res.ok) {
+        const txt = await res.text();
+        try {
+          const data = JSON.parse(txt);
+          alert("Server error: " + (data.message || txt));
+          return
+        } catch {
+          alert("Server error: " + txt);
+          return
+        }
+      }
+
+      const payload = await res.json();
+      const found = payload?.data ?? payload;
       setCurrentUser(found);
       navigate("/game");
-    } 
-    else {
-      alert("Invalid credentials");
+    } catch (err) {
+      console.error("Login error (fetch failed):", err);
+      alert("Failed to connect to server — check backend is running and URL/port are correct.");
     }
   }
 
@@ -303,18 +327,18 @@ function Login() {
           type="text" value={pass}
           onChange={e => setPass(e.target.value)}
           placeholder="password" />
-          
-          <div>
-            <button
-              className="m-2 border p-2 rounded"
-              onClick={() => setLogin("Sign Up")}>
-              Sign Up
-            </button>
-            <button
-              className="m-2 border p-2 rounded"
-              onClick={() => setLogin("Join Game")}>
-              Join Game
-            </button>
+
+        <div>
+          <button
+            className="m-2 border p-2 rounded"
+            onClick={() => setLogin("Sign Up")}>
+            Sign Up
+          </button>
+          <button
+            className="m-2 border p-2 rounded"
+            onClick={() => setLogin("Join Game")}>
+            Join Game
+          </button>
         </div>
       </form>
     </div>
@@ -337,7 +361,7 @@ function SignUp() {
       alert("Username already taken");
       return;
     }
-    
+
     //users.push({ username: name, password: pass });
     try {
       await fetch("http://localhost:3001/api/v1/users", {
@@ -356,7 +380,7 @@ function SignUp() {
   return (
     <div className="m-2 flex flex-col items-center justify-center min-h-screen">
       <h1>Register</h1>
-      <form 
+      <form
         className="m-2 flex flex-col items-center justify-center"
         onSubmit={handleSubmit}>
         <input
@@ -381,7 +405,7 @@ function SignUp() {
 function Game() {
   const [answer, setAnswer] = useState("");
   const [questionState, setQuestionState] = useState(0);
-  const [selectedQuestions] = useState(() => 
+  const [selectedQuestions] = useState(() =>
     questions.content
       .sort(() => Math.random() - 0.5)
       .slice(0, 10)
@@ -483,10 +507,10 @@ function Summary() {
   const handleAnswer = (e: React.FormEvent) => {
     e.preventDefault();
     if (final === "Exit") {
-      setScore(prev => prev = 0);
+      setScore(0);
       navigate("/login");
     } else {
-      setScore(prev => prev = 0);
+      setScore(0);
       navigate("/game")
     }
   }

@@ -368,6 +368,11 @@ function SignUp() {
 function Game() {
   const [answer, setAnswer] = useState("");
   const [questionState, setQuestionState] = useState(0);
+  const [selectedQuestions] = useState(() => 
+    questions.content
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 10)
+  );
 
   const { score } = useContext(ScoreContext);
   const { setScore } = useContext(ScoreContext);
@@ -377,14 +382,14 @@ function Game() {
 
   const handleAnswer = (e: React.FormEvent) => {
     e.preventDefault();
-    if (answer === questions.content[questionState].answer) {
+    if (answer === selectedQuestions[questionState].answer) {
       setScore(prev => prev + 1);
       setQuestionState(prev => prev + 1);
     } else {
       alert("Wrong answer!")
       setQuestionState(prev => prev + 1);
     }
-    if (questionState === questions.content.length - 1) {
+    if (questionState === selectedQuestions.length - 1) {
       navigate("/summary");
     }
   }
@@ -415,31 +420,31 @@ function Game() {
         <div className="m-2 flex flex-col items-center justify-center min-h-screen">
           <h1 className="m-2">
             {
-              questions.content[questionState].question
+              selectedQuestions[questionState].question
             }
           </h1>
           <div className="flex flex-row">
             <div className="m-2 flex flex-col items-center">
               <button className="m-2 p-2 border rounded" id="A" onClick={() => setAnswer("A")}>
-                {questions.content[questionState].options.find(o => o.key === "A")?.value}
+                {selectedQuestions[questionState].options.find(o => o.key === "A")?.value}
               </button>
               <button className="m-2 p-2 border rounded" id="B" onClick={() => setAnswer("B")}>
-                {questions.content[questionState].options.find(o => o.key === "B")?.value}
+                {selectedQuestions[questionState].options.find(o => o.key === "B")?.value}
               </button>
             </div>
             <div className="m-2 flex flex-col items-center">
               <button className="m-2 p-2 border rounded" id="C" onClick={() => setAnswer("C")}>
-                {questions.content[questionState].options.find(o => o.key === "C")?.value}
+                {selectedQuestions[questionState].options.find(o => o.key === "C")?.value}
               </button>
               <button className="m-2 p-2 border rounded" id="D" onClick={() => setAnswer("D")}>
-                {questions.content[questionState].options.find(o => o.key === "D")?.value}
+                {selectedQuestions[questionState].options.find(o => o.key === "D")?.value}
               </button>
             </div>
           </div>
         </div>
       </form>
       <div>
-        <h6 className="m-2 p-2">Score: {score}</h6>
+        <h6 className="m-2 p-2">Score: {score}/10</h6>
       </div>
       <div>
 
@@ -476,7 +481,7 @@ function Summary() {
     <div className="m-2 flex flex-col items-center justify-center min-h-screen">
       <h1>Final Result for {currentUser?.username ?? "Player"}</h1>
       <div className="m-2 p-10 flex flex-row items-center justify-center border rounded">
-        <p>You've got {score}/{questions.content.length}</p>
+        <p>You've got {score}/10</p>
       </div>
       <form onSubmit={handleAnswer}>
         <div>

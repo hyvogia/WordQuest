@@ -49,10 +49,10 @@ function ScoreProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-const users: IUser[] = [
+let users: IUser[] = [
   { username: "Andrew", password: "andrew123" },
-  { username: "Bill", password: "bill123" },
-  { username: "Carol", password: "carol123" }
+  { username: "Bill",    password: "bill123"  },
+  { username: "Carol",   password: "carol123" }
 ];
 
 const questions = {
@@ -169,12 +169,45 @@ function Login() {
 }
 
 function SignUp() {
+  const [name, setName] = useState("");
+  const [pass, setPass] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !pass) {
+      alert("Please enter a username and password");
+      return;
+    }
+    const exists = users.some(u => u.username.toLowerCase() === name.trim().toLowerCase());
+    if (exists) {
+      alert("Username already taken");
+      return;
+    }
+    users.push({ username: name, password: pass });
+    alert("Sign up sucessfully!")
+    navigate("/login");
+  };
+
   return (
     <div className="m-2 flex flex-col items-center justify-center min-h-screen">
       <h1>Register</h1>
-      <form className="m-2 flex flex-col items-center justify-center">
-        <input className="p-2 m-2 border rounded" placeholder="username" />
-        <input className="p-2 m-2 border rounded" placeholder="password" />
+      <form 
+        className="m-2 flex flex-col items-center justify-center"
+        onSubmit={handleSubmit}>
+        <input
+          className="p-2 m-2 border rounded"
+          placeholder="username"
+          value={name}
+          onChange={e => setName(e.target.value)}
+        />
+        <input
+          className="p-2 m-2 border rounded"
+          type="password"
+          placeholder="password"
+          value={pass}
+          onChange={e => setPass(e.target.value)}
+        />
         <button className="m-2 border p-2 rounded">Sign Up</button>
       </form>
     </div>
@@ -208,9 +241,7 @@ function Game() {
   const handleExit = () => {
     const ok = window.confirm("You are about to log out. Your progress will be loss. Do you want to continue?");
     if (!ok) return;
-    // reset user context
     setCurrentUser(null);
-    // optional resets for a clean logout
     setScore(0);
     setQuestionState(0);
     setAnswer("");

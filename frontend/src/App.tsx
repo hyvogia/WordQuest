@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router";
 //import Hello from "./components/Hello";
 
@@ -28,8 +28,19 @@ function UsersProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+interface IOption {
+  key: string;
+  value: string;
+}
+
+interface IQuestion {
+  question: string;
+  options: IOption[];
+  answer: string;
+}
+
 interface IScoreContext {
-  score: number,
+  score: number;
   setScore: React.Dispatch<React.SetStateAction<number>>;
 }
 
@@ -398,7 +409,7 @@ function SignUp() {
     }
 
     alert("Sign up sucessfully!")
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -427,33 +438,80 @@ function SignUp() {
 }
 
 function Game() {
-  const [answer, setAnswer] = useState("");
-  const [questionState, setQuestionState] = useState(0);
-  const [selectedQuestions] = useState(() =>
-    questions.content
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 10)
-  );
+  const [answer, setAnswer] = useState<string>("");
+  const [questionState, setQuestionState] = useState<number>(0);
+  const [selectedQuestions, setSelectedQuestions] = useState<IQuestion[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
-  const { score } = useContext(ScoreContext);
-  const { setScore } = useContext(ScoreContext);
+  const { score, setScore } = useContext(ScoreContext);
   const { currentUser, setCurrentUser } = useContext(UsersContext);
 
   const navigate = useNavigate();
 
-  const handleAnswer = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (answer === selectedQuestions[questionState].answer) {
-      setScore(prev => prev + 1);
-      setQuestionState(prev => prev + 1);
+  // fetch questions from backend once on mount
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch("http://localhost:3001/api/v1/questions");
+        const payload = await res.json();
+        if (!mounted) return;
+        if (payload && payload.success && Array.isArray(payload.data)) {
+          const arr = [...payload.data] as IQuestion[];
+          const shuffled = arr.sort(() => Math.random() - 0.5).slice(0, 2); // adjust slice to 10 when ready
+          setSelectedQuestions(shuffled);
+        } else {
+          setSelectedQuestions([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch questions", err);
+        setSelectedQuestions([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const submitAnswer = async (choice: "A" | "B" | "C" | "D") => {
+    if (submitting) return;
+    if (!selectedQuestions.length) return;
+
+    const currentIndex = questionState;
+    const current = selectedQuestions[currentIndex];
+    if (!current) return; // defensive
+
+    const correct = choice === current.answer;
+    const newScore = correct ? score + 1 : score;
+
+    if (correct) setScore(prev => prev + 1);
+
+    const isLast = currentIndex === selectedQuestions.length - 1;
+
+    if (isLast) {
+      setSubmitting(true);
+      try {
+        await fetch("http://localhost:3001/api/v1/scores", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: currentUser?.username ?? "Guest", score: newScore })
+        });
+      } catch (err) {
+        console.warn("failed to upsert score to backend:", err);
+      } finally {
+        // navigate after attempt (do not increment questionState)
+        navigate("/summary");
+      }
     } else {
-      alert("Wrong answer!")
+      // advance only when not last
       setQuestionState(prev => prev + 1);
+      if (!correct) alert("Wrong answer!");
     }
-    if (questionState === selectedQuestions.length - 1) {
-      navigate("/summary");
-    }
-  }
+
+    // reset selected answer state if you still use it
+    setAnswer("");
+  };
 
   const handleExit = () => {
     const ok = window.confirm("You are about to log out. Your progress will be loss. Do you want to continue?");
@@ -462,8 +520,14 @@ function Game() {
     setScore(0);
     setQuestionState(0);
     setAnswer("");
-    navigate("/login");
+    navigate("/");
   };
+
+  if (loading) return <div className="m-2 p-4">Loading questions...</div>;
+  if (!selectedQuestions.length) return <div className="m-2 p-4">No questions available.</div>;
+
+  const q = selectedQuestions[questionState];
+  if (!q) return <div className="m-2 p-4">Loading next question...</div>;
 
   return (
     <div className="m-2 flex flex-row justify-center">
@@ -474,44 +538,61 @@ function Game() {
           Exit
         </button>
       </div>
+
       <div>
         <h6 className="m-2 p-2">Name: {currentUser?.username ?? "Guest"}</h6>
       </div>
-      <form onSubmit={handleAnswer}>
-        <div className="m-2 flex flex-col items-center justify-center min-h-screen">
-          <h1 className="m-2">
-            {
-              selectedQuestions[questionState].question
-            }
-          </h1>
-          <div className="flex flex-row">
-            <div className="m-2 flex flex-col items-center">
-              <button className="m-2 p-2 border rounded" id="A" onClick={() => setAnswer("A")}>
-                {selectedQuestions[questionState].options.find(o => o.key === "A")?.value}
-              </button>
-              <button className="m-2 p-2 border rounded" id="B" onClick={() => setAnswer("B")}>
-                {selectedQuestions[questionState].options.find(o => o.key === "B")?.value}
-              </button>
-            </div>
-            <div className="m-2 flex flex-col items-center">
-              <button className="m-2 p-2 border rounded" id="C" onClick={() => setAnswer("C")}>
-                {selectedQuestions[questionState].options.find(o => o.key === "C")?.value}
-              </button>
-              <button className="m-2 p-2 border rounded" id="D" onClick={() => setAnswer("D")}>
-                {selectedQuestions[questionState].options.find(o => o.key === "D")?.value}
-              </button>
-            </div>
+
+      <div className="m-2 flex flex-col items-center justify-center min-h-screen">
+        <h1 className="m-2">{q.question}</h1>
+        <div className="flex flex-row">
+          <div className="m-2 flex flex-col items-center">
+            <button
+              type="button"
+              className="m-2 p-2 border rounded"
+              onClick={() => submitAnswer("A")}
+              disabled={submitting}
+            >
+              {q.options.find(o => o.key === "A")?.value}
+            </button>
+
+            <button
+              type="button"
+              className="m-2 p-2 border rounded"
+              onClick={() => submitAnswer("B")}
+              disabled={submitting}
+            >
+              {q.options.find(o => o.key === "B")?.value}
+            </button>
+          </div>
+
+          <div className="m-2 flex flex-col items-center">
+            <button
+              type="button"
+              className="m-2 p-2 border rounded"
+              onClick={() => submitAnswer("C")}
+              disabled={submitting}
+            >
+              {q.options.find(o => o.key === "C")?.value}
+            </button>
+
+            <button
+              type="button"
+              className="m-2 p-2 border rounded"
+              onClick={() => submitAnswer("D")}
+              disabled={submitting}
+            >
+              {q.options.find(o => o.key === "D")?.value}
+            </button>
           </div>
         </div>
-      </form>
+      </div>
+
       <div>
         <h6 className="m-2 p-2">Score: {score}/10</h6>
       </div>
-      <div>
-
-      </div>
     </div>
-  )
+  );
 }
 
 function Summary() {
@@ -532,7 +613,7 @@ function Summary() {
     e.preventDefault();
     if (final === "Exit") {
       setScore(0);
-      navigate("/login");
+      navigate("/");
     } else {
       setScore(0);
       navigate("/game")
@@ -569,7 +650,7 @@ function Main() {
       <UsersProvider>
         <ScoreProvider>
           <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/game" element={<Game />} />
             <Route path="/summary" element={<Summary />} />

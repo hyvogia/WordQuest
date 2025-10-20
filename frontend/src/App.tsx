@@ -350,27 +350,51 @@ function SignUp() {
   const [pass, setPass] = useState("");
   const navigate = useNavigate();
 
+  const { currentUser, setCurrentUser } = useContext(UsersContext);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !pass) {
       alert("Please enter a username and password");
       return;
     }
-    const exists = users.some(u => u.username.toLowerCase() === name.trim().toLowerCase());
-    if (exists) {
+    //const exists = users.some(u => u.username.toLowerCase() === name.trim().toLowerCase());
+
+    const res = await fetch(`http://localhost:3001/api/v1/users/${encodeURIComponent(name)}`, {
+      method: "GET"
+    });
+
+    if (!res.ok) {
+      const txt = await res.text();
+      try {
+        const data = JSON.parse(txt);
+        alert("Server error: " + (data.message || txt));
+        return
+      } catch {
+        alert("Server error: " + txt);
+        return
+      }
+    }
+
+    const payload = await res.json();
+    const found = payload?.data ?? payload;
+    setCurrentUser(found);
+
+    if (name === currentUser?.username) {
       alert("Username already taken");
       return;
     }
-
-    //users.push({ username: name, password: pass });
-    try {
-      await fetch("http://localhost:3001/api/v1/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: name, password: pass })
-      });
-    } catch (err) {
-      console.warn("failed to save user to backend (backend optional):", err);
+    else {
+      //users.push({ username: name, password: pass });
+      try {
+        await fetch("http://localhost:3001/api/v1/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: name, password: pass })
+        });
+      } catch (err) {
+        console.warn("failed to save user to backend (backend optional):", err);
+      }
     }
 
     alert("Sign up sucessfully!")

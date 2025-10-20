@@ -107,9 +107,160 @@ const questions = {
         { key: "D", value: "Rough" }
       ],
       answer: "B"
+    },
+    {
+      question: "Find the synonym of 'angry':",
+      options: [
+        { key: "A", value: "Calm" },
+        { key: "B", value: "Furious" },
+        { key: "C", value: "Happy" },
+        { key: "D", value: "Relaxed" }
+      ],
+      answer: "B"
+    },
+    {
+      question: "Find the synonym of 'smart':",
+      options: [
+        { key: "A", value: "Clever" },
+        { key: "B", value: "Dull" },
+        { key: "C", value: "Lazy" },
+        { key: "D", value: "Forgetful" }
+      ],
+      answer: "A"
+    },
+    {
+      question: "Find the synonym of 'tiny':",
+      options: [
+        { key: "A", value: "Huge" },
+        { key: "B", value: "Small" },
+        { key: "C", value: "Wide" },
+        { key: "D", value: "Thick" }
+      ],
+      answer: "B"
+    },
+    {
+      question: "Find the synonym of 'cold':",
+      options: [
+        { key: "A", value: "Hot" },
+        { key: "B", value: "Freezing" },
+        { key: "C", value: "Warm" },
+        { key: "D", value: "Burning" }
+      ],
+      answer: "B"
+    },
+    {
+      question: "Find the synonym of 'strong':",
+      options: [
+        { key: "A", value: "Powerful" },
+        { key: "B", value: "Weak" },
+        { key: "C", value: "Tired" },
+        { key: "D", value: "Fragile" }
+      ],
+      answer: "A"
+    },
+    {
+      question: "Find the synonym of 'difficult':",
+      options: [
+        { key: "A", value: "Easy" },
+        { key: "B", value: "Simple" },
+        { key: "C", value: "Hard" },
+        { key: "D", value: "Light" }
+      ],
+      answer: "C"
+    },
+    {
+      question: "Find the synonym of 'friend':",
+      options: [
+        { key: "A", value: "Enemy" },
+        { key: "B", value: "Pal" },
+        { key: "C", value: "Stranger" },
+        { key: "D", value: "Opponent" }
+      ],
+      answer: "B"
+    },
+    {
+      question: "Find the synonym of 'angry':",
+      options: [
+        { key: "A", value: "Irate" },
+        { key: "B", value: "Gentle" },
+        { key: "C", value: "Patient" },
+        { key: "D", value: "Polite" }
+      ],
+      answer: "A"
+    },
+    {
+      question: "Find the synonym of 'clean':",
+      options: [
+        { key: "A", value: "Dirty" },
+        { key: "B", value: "Pure" },
+        { key: "C", value: "Messy" },
+        { key: "D", value: "Untidy" }
+      ],
+      answer: "B"
+    },
+    {
+      question: "Find the synonym of 'lazy':",
+      options: [
+        { key: "A", value: "Active" },
+        { key: "B", value: "Energetic" },
+        { key: "C", value: "Idle" },
+        { key: "D", value: "Busy" }
+      ],
+      answer: "C"
+    },
+    {
+      question: "Find the synonym of 'old':",
+      options: [
+        { key: "A", value: "Ancient" },
+        { key: "B", value: "Young" },
+        { key: "C", value: "Modern" },
+        { key: "D", value: "Fresh" }
+      ],
+      answer: "A"
+    },
+    {
+      question: "Find the synonym of 'rich':",
+      options: [
+        { key: "A", value: "Poor" },
+        { key: "B", value: "Wealthy" },
+        { key: "C", value: "Cheap" },
+        { key: "D", value: "Humble" }
+      ],
+      answer: "B"
+    },
+    {
+      question: "Find the synonym of 'sad':",
+      options: [
+        { key: "A", value: "Miserable" },
+        { key: "B", value: "Joyful" },
+        { key: "C", value: "Pleased" },
+        { key: "D", value: "Happy" }
+      ],
+      answer: "A"
+    },
+    {
+      question: "Find the synonym of 'easy':",
+      options: [
+        { key: "A", value: "Hard" },
+        { key: "B", value: "Difficult" },
+        { key: "C", value: "Simple" },
+        { key: "D", value: "Complicated" }
+      ],
+      answer: "C"
+    },
+    {
+      question: "Find the synonym of 'hungry':",
+      options: [
+        { key: "A", value: "Thirsty" },
+        { key: "B", value: "Full" },
+        { key: "C", value: "Starving" },
+        { key: "D", value: "Satisfied" }
+      ],
+      answer: "C"
     }
   ]
 };
+
 
 function Login() {
   const [name, setName] = useState("");

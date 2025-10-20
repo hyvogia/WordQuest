@@ -286,7 +286,6 @@ function Login() {
     else {
       alert("Invalid credentials");
     }
-    
   }
 
   return (
@@ -327,7 +326,7 @@ function SignUp() {
   const [pass, setPass] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !pass) {
       alert("Please enter a username and password");
@@ -338,7 +337,18 @@ function SignUp() {
       alert("Username already taken");
       return;
     }
-    users.push({ username: name, password: pass });
+    
+    //users.push({ username: name, password: pass });
+    try {
+      await fetch("http://localhost:3001/api/v1/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: name, password: pass })
+      });
+    } catch (err) {
+      console.warn("failed to save user to backend (backend optional):", err);
+    }
+
     alert("Sign up sucessfully!")
     navigate("/login");
   };

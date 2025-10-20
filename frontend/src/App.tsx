@@ -274,16 +274,19 @@ function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const found = users.find(u => u.username === name && u.password === pass);
-    if (found) {
+    if (login === "Sign Up") {
+      setName(prev => prev = "");
+      setPass(prev => prev = "");
+      navigate("/signup");
+    }
+    else if (found) {
       setCurrentUser(found);
       navigate("/game");
     } 
-    else if (login === "Sign Up") {
-      navigate("/signup");
-    }
     else {
       alert("Invalid credentials");
     }
+    
   }
 
   return (

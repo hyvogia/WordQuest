@@ -106,7 +106,7 @@ export default function Game() {
         navigate("/");
     };
 
-    
+
     if (loading) return <div className="m-2 p-4">Loading questions...</div>;
     if (!selectedQuestions.length) return <div className="m-2 p-4">No questions available.</div>;
 
@@ -115,38 +115,41 @@ export default function Game() {
 
 
     return (
-        <div className="m-2 flex flex-row justify-center">
+        <div className="m-2 flex flex-row justify-center font-sans text-gray-800">
             <div>
                 <button
-                    className="m-2 p-2 border rounded"
+                    className="m-2 px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-sm font-medium"
                     onClick={handleExit}>
                     Exit
                 </button>
             </div>
 
             <div>
-                <h6 className="m-2 p-2">Name: {currentUser?.username ?? "Guest"}</h6>
+                <h6 className="m-2 p-2 text-sm font-medium text-gray-600">
+                    Name: {currentUser?.username ?? "Guest"}
+                </h6>
             </div>
 
             <div className="m-2 flex flex-col items-center justify-center min-h-screen">
-                <h1 className="m-2">{q.question}</h1>
+                <h1 className="text-3xl font-semibold mb-10">
+                    {q.question}
+                </h1>
+
                 <div className="flex flex-row">
                     <div className="m-2 flex flex-col items-center">
                         <button
                             type="button"
-                            className="m-2 p-2 border rounded"
+                            className="m-2 w-48 py-4 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm disabled:opacity-50"
                             onClick={() => submitAnswer("A")}
-                            disabled={submitting}
-                        >
+                            disabled={submitting}>
                             {q.options.find(o => o.key === "A")?.value}
                         </button>
 
                         <button
                             type="button"
-                            className="m-2 p-2 border rounded"
+                            className="m-2 w-48 py-4 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm disabled:opacity-50"
                             onClick={() => submitAnswer("B")}
-                            disabled={submitting}
-                        >
+                            disabled={submitting}>
                             {q.options.find(o => o.key === "B")?.value}
                         </button>
                     </div>
@@ -154,19 +157,17 @@ export default function Game() {
                     <div className="m-2 flex flex-col items-center">
                         <button
                             type="button"
-                            className="m-2 p-2 border rounded"
+                            className="m-2 w-48 py-4 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm disabled:opacity-50"
                             onClick={() => submitAnswer("C")}
-                            disabled={submitting}
-                        >
+                            disabled={submitting}>
                             {q.options.find(o => o.key === "C")?.value}
                         </button>
 
                         <button
                             type="button"
-                            className="m-2 p-2 border rounded"
+                            className="m-2 w-48 py-4 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm disabled:opacity-50"
                             onClick={() => submitAnswer("D")}
-                            disabled={submitting}
-                        >
+                            disabled={submitting}>
                             {q.options.find(o => o.key === "D")?.value}
                         </button>
                     </div>
@@ -174,8 +175,11 @@ export default function Game() {
             </div>
 
             <div>
-                <h6 className="m-2 p-2">Score: {score}/10</h6>
+                <h6 className="m-2 p-2 text-sm font-medium text-gray-600">
+                    Score: {score}/10
+                </h6>
             </div>
         </div>
     );
+
 }

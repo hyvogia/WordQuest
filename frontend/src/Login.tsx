@@ -62,36 +62,37 @@ export default function Login() {
         }
     };
 
-
     return (
-        <div
-            className="m-2 flex flex-col items-center justify-center min-h-screen">
-            <h1>Login</h1>
-            <form className="m-2 flex flex-col items-center justify-center" onSubmit={handleSubmit}>
+        <div className="m-2 flex flex-col items-center justify-center min-h-screen font-sans text-gray-800">
+            <h1 className="text-3xl font-semibold mb-8">Login</h1>
+            <form
+                className="m-2 flex flex-col items-center justify-center space-y-4"
+                onSubmit={handleSubmit}>
                 <input
-                    className="p-2 m-2 border rounded"
-                    type="text" value={name}
+                    className="w-64 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder-gray-400 text-gray-700"
+                    type="text"
+                    value={name}
                     onChange={e => setName(e.target.value)}
-                    placeholder="username" />
+                    placeholder="Username"/>
                 <input
-                    className="p-2 m-2 border rounded"
-                    type="text" value={pass}
+                    className="w-64 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder-gray-400 text-gray-700"
+                    type="password"
+                    value={pass}
                     onChange={e => setPass(e.target.value)}
-                    placeholder="password" />
-
-                <div>
+                    placeholder="Password"/>
+                <div className="flex flex-row space-x-4 mt-4">
                     <button
-                        className="m-2 border p-2 rounded"
+                        className="w-32 py-3 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm"
                         onClick={() => setLogin("Sign Up")}>
                         Sign Up
                     </button>
                     <button
-                        className="m-2 border p-2 rounded"
+                        className="w-32 py-3 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm"
                         onClick={() => setLogin("Join Game")}>
                         Join Game
                     </button>
                 </div>
             </form>
         </div>
-    )
+    );
 }

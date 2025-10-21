@@ -35,7 +35,7 @@ export default function SignUp() {
                 }
                 return;
             }
-            
+
             const createRes = await fetch(`${BASE_URL}/users`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -60,26 +60,31 @@ export default function SignUp() {
 
 
     return (
-        <div className="m-2 flex flex-col items-center justify-center min-h-screen">
-            <h1>Register</h1>
+        <div className="m-2 flex flex-col items-center justify-center min-h-screen font-sans text-gray-800">
+            <h1 className="text-3xl font-semibold mb-8">Register</h1>
+
             <form
-                className="m-2 flex flex-col items-center justify-center"
+                className="m-2 flex flex-col items-center justify-center space-y-4"
                 onSubmit={handleSubmit}>
                 <input
-                    className="p-2 m-2 border rounded"
-                    placeholder="username"
+                    className="w-64 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder-gray-400 text-gray-700"
+                    placeholder="Username"
                     value={name}
-                    onChange={e => setName(e.target.value)}
-                />
+                    onChange={e => setName(e.target.value)}/>
+
                 <input
-                    className="p-2 m-2 border rounded"
+                    className="w-64 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder-gray-400 text-gray-700"
                     type="password"
-                    placeholder="password"
+                    placeholder="Password"
                     value={pass}
-                    onChange={e => setPass(e.target.value)}
-                />
-                <button className="m-2 border p-2 rounded">Sign Up</button>
+                    onChange={e => setPass(e.target.value)}/>
+
+                <button
+                    className="w-32 py-3 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm mt-4">
+                    Sign Up
+                </button>
             </form>
         </div>
-    )
+    );
+
 }

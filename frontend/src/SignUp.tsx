@@ -51,7 +51,7 @@ export default function SignUp() {
             alert("Sign up successfully!");
             setName("");
             setPass("");
-            navigate("/login");
+            navigate("/");
         } catch (err) {
             console.warn("failed to save user to backend:", err);
             alert("Network error - check backend is running and URL/port are correct.");

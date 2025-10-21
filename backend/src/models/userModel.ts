@@ -27,7 +27,7 @@ export const users: IUser[] = [
 ];
 
 export const scores: IScore[] = [
-  // example: { username: "Andrew", score: 0 }
+  // { username: "Andrew", score: 0 }
 ];
 
 export const questions: IQuestion[] = [

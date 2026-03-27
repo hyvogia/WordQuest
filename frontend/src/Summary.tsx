@@ -22,32 +22,42 @@ export default function Summary() {
         }
     }
     return (
-        <div className="m-2 flex flex-col items-center justify-center min-h-screen font-sans text-gray-800">
-            <h1 className="text-3xl font-semibold mb-8">
-                Final Result for {currentUser?.username ?? "Player"}
-            </h1>
-
-            <div className="m-4 px-10 py-6 flex flex-row items-center justify-center bg-gray-50 border border-gray-300 rounded-xl shadow-sm">
-                <p className="text-xl font-medium text-gray-700">
-                    You've got {score}/10
-                </p>
-            </div>
-
-            <form onSubmit={handleAnswer} className="mt-4">
-                <div className="flex flex-row space-x-4">
-                    <button
-                        className="w-36 py-3 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm"
-                        onClick={() => setFinal("Exit")}>
-                        Exit Game
-                    </button>
-
-                    <button
-                        className="w-36 py-3 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm"
-                        onClick={() => setFinal("Continue")}>
-                        Continue
-                    </button>
+        <div className="space-page flex items-center justify-center">
+            <div className="space-card text-center">
+                <div className="mb-5 flex justify-center">
+                    <span className="space-badge">Mission Debrief</span>
                 </div>
-            </form>
+
+                <h1 className="mb-3 text-3xl font-semibold tracking-tight text-slate-100 md:text-4xl">
+                    Final Result for {currentUser?.username ?? "Player"}
+                </h1>
+
+                <p className="mx-auto mb-7 max-w-xl text-sm text-slate-200/80 md:text-base">
+                    Atmospheric re-entry complete. Review your score and decide your next launch.
+                </p>
+
+                <div className="mx-auto mb-8 flex max-w-md flex-row items-center justify-center rounded-2xl border border-cyan-200/35 bg-cyan-300/10 px-7 py-5 shadow-[0_18px_36px_rgba(0,0,0,0.35)]">
+                    <p className="text-2xl font-semibold tracking-tight text-sky-100">
+                        You scored {score}/10
+                    </p>
+                </div>
+
+                <form onSubmit={handleAnswer} className="mt-2">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <button
+                            className="space-btn space-btn-secondary w-full py-3"
+                            onClick={() => setFinal("Exit")}>
+                            Exit Game
+                        </button>
+
+                        <button
+                            className="space-btn w-full py-3"
+                            onClick={() => setFinal("Continue")}>
+                            Continue
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 

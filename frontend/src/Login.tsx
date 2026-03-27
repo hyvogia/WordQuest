@@ -63,36 +63,46 @@ export default function Login() {
     };
 
     return (
-        <div className="m-2 flex flex-col items-center justify-center min-h-screen font-sans text-gray-800">
-            <h1 className="text-3xl font-semibold mb-8">Login</h1>
-            <form
-                className="m-2 flex flex-col items-center justify-center space-y-4"
-                onSubmit={handleSubmit}>
-                <input
-                    className="w-64 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder-gray-400 text-gray-700"
-                    type="text"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    placeholder="Username"/>
-                <input
-                    className="w-64 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder-gray-400 text-gray-700"
-                    type="password"
-                    value={pass}
-                    onChange={e => setPass(e.target.value)}
-                    placeholder="Password"/>
-                <div className="flex flex-row space-x-4 mt-4">
-                    <button
-                        className="w-32 py-3 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm"
-                        onClick={() => setLogin("Sign Up")}>
-                        Sign Up
-                    </button>
-                    <button
-                        className="w-32 py-3 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm"
-                        onClick={() => setLogin("Join Game")}>
-                        Join Game
-                    </button>
+        <div className="space-page flex items-center justify-center">
+            <div className="space-card">
+                <div className="mb-6 flex items-center justify-between gap-3">
+                    <span className="space-badge">Orbital Access</span>
+                    <div className="floating-orb h-10 w-10 rounded-full border border-cyan-200/40 bg-cyan-300/20 blur-[1px]" />
                 </div>
-            </form>
+
+                <h1 className="mb-2 text-3xl font-semibold tracking-tight text-slate-100 md:text-4xl">WordQuest Mission Control</h1>
+                <p className="mb-8 max-w-lg text-sm leading-relaxed text-slate-200/80 md:text-base">
+                    Enter your credentials to launch from the upper atmosphere into deep-space quiz mode.
+                </p>
+
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                    <input
+                        className="space-field"
+                        type="text"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        placeholder="Username" />
+                    <input
+                        className="space-field"
+                        type="password"
+                        value={pass}
+                        onChange={e => setPass(e.target.value)}
+                        placeholder="Password" />
+
+                    <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <button
+                            className="space-btn space-btn-secondary w-full py-3"
+                            onClick={() => setLogin("Sign Up")}>
+                            Sign Up
+                        </button>
+                        <button
+                            className="space-btn w-full py-3"
+                            onClick={() => setLogin("Join Game")}>
+                            Join Game
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }

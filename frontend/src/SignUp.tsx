@@ -60,30 +60,35 @@ export default function SignUp() {
 
 
     return (
-        <div className="m-2 flex flex-col items-center justify-center min-h-screen font-sans text-gray-800">
-            <h1 className="text-3xl font-semibold mb-8">Register</h1>
+        <div className="space-page flex items-center justify-center">
+            <div className="space-card">
+                <div className="mb-6 flex items-center justify-between gap-3">
+                    <span className="space-badge">New Cadet</span>
+                    <div className="floating-orb h-10 w-10 rounded-full border border-indigo-200/40 bg-indigo-300/25 blur-[1px]" />
+                </div>
 
-            <form
-                className="m-2 flex flex-col items-center justify-center space-y-4"
-                onSubmit={handleSubmit}>
-                <input
-                    className="w-64 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder-gray-400 text-gray-700"
-                    placeholder="Username"
-                    value={name}
-                    onChange={e => setName(e.target.value)}/>
+                <h1 className="mb-2 text-3xl font-semibold tracking-tight text-slate-100 md:text-4xl">Create Your Starfleet Profile</h1>
+                <p className="mb-8 max-w-lg text-sm leading-relaxed text-slate-200/80 md:text-base">
+                    Secure your identity, then jump into orbit and start conquering WordQuest missions.
+                </p>
 
-                <input
-                    className="w-64 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder-gray-400 text-gray-700"
-                    type="password"
-                    placeholder="Password"
-                    value={pass}
-                    onChange={e => setPass(e.target.value)}/>
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                    <input
+                        className="space-field"
+                        placeholder="Username"
+                        value={name}
+                        onChange={e => setName(e.target.value)} />
 
-                <button
-                    className="w-32 py-3 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm mt-4">
-                    Sign Up
-                </button>
-            </form>
+                    <input
+                        className="space-field"
+                        type="password"
+                        placeholder="Password"
+                        value={pass}
+                        onChange={e => setPass(e.target.value)} />
+
+                    <button className="space-btn mt-5 w-full py-3">Sign Up</button>
+                </form>
+            </div>
         </div>
     );
 

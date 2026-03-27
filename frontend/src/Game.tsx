@@ -107,77 +107,120 @@ export default function Game() {
     };
 
 
-    if (loading) return <div className="m-2 p-4">Loading questions...</div>;
-    if (!selectedQuestions.length) return <div className="m-2 p-4">No questions available.</div>;
+    if (loading) {
+        return (
+            <div className="space-page flex items-center justify-center">
+                <div className="space-card text-center">
+                    <span className="space-badge">Calibration</span>
+                    <h2 className="mt-4 text-2xl font-semibold text-slate-100">Loading question constellation...</h2>
+                </div>
+            </div>
+        );
+    }
+    if (!selectedQuestions.length) {
+        return (
+            <div className="space-page flex items-center justify-center">
+                <div className="space-card text-center">
+                    <span className="space-badge">Signal Lost</span>
+                    <h2 className="mt-4 text-2xl font-semibold text-slate-100">No questions available.</h2>
+                </div>
+            </div>
+        );
+    }
 
     const q = selectedQuestions[questionState];
-    if (!q) return <div className="m-2 p-4">Loading next question...</div>;
+    if (!q) {
+        return (
+            <div className="space-page flex items-center justify-center">
+                <div className="space-card text-center">
+                    <span className="space-badge">Transition</span>
+                    <h2 className="mt-4 text-2xl font-semibold text-slate-100">Loading next question...</h2>
+                </div>
+            </div>
+        );
+    }
+
+    const optionA = q.options.find(o => o.key === "A")?.value;
+    const optionB = q.options.find(o => o.key === "B")?.value;
+    const optionC = q.options.find(o => o.key === "C")?.value;
+    const optionD = q.options.find(o => o.key === "D")?.value;
 
 
     return (
-        <div className="m-2 flex flex-row justify-center font-sans text-gray-800">
-            <div>
-                <button
-                    className="m-2 px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-sm font-medium"
-                    onClick={handleExit}>
-                    Exit
-                </button>
-            </div>
+        <div className="space-page flex items-center justify-center py-6">
+            <div className="space-card w-full max-w-5xl">
+                <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+                    <button
+                        className="space-btn space-btn-secondary px-4 py-2 text-sm"
+                        onClick={handleExit}>
+                        Exit Mission
+                    </button>
 
-            <div>
-                <h6 className="m-2 p-2 text-sm font-medium text-gray-600">
-                    Name: {currentUser?.username ?? "Guest"}
-                </h6>
-            </div>
+                    <div className="flex items-center gap-2 text-xs uppercase tracking-[0.12em] text-slate-300">
+                        <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(88,205,255,0.9)]" />
+                        Orbit Stable
+                    </div>
+                </div>
 
-            <div className="m-2 flex flex-col items-center justify-center min-h-screen">
-                <h1 className="text-3xl font-semibold mb-10">
+                <div className="mb-7 grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <div className="rounded-xl border border-slate-200/20 bg-slate-900/30 px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.09em] text-slate-300/80">Pilot</p>
+                        <p className="mt-1 font-semibold text-cyan-100">{currentUser?.username ?? "Guest"}</p>
+                    </div>
+
+                    <div className="rounded-xl border border-slate-200/20 bg-slate-900/30 px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.09em] text-slate-300/80">Progress</p>
+                        <p className="mt-1 font-semibold text-cyan-100">Question {questionState + 1} / {selectedQuestions.length}</p>
+                    </div>
+
+                    <div className="rounded-xl border border-slate-200/20 bg-slate-900/30 px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.09em] text-slate-300/80">Score</p>
+                        <p className="mt-1 font-semibold text-cyan-100">{score} / {QUESTION_COUNT}</p>
+                    </div>
+                </div>
+
+                <div className="mb-6 flex items-center justify-between gap-3">
+                    <span className="space-badge">Deep Space Question</span>
+                    <div className="floating-orb h-9 w-9 rounded-full border border-cyan-200/40 bg-cyan-200/20" />
+                </div>
+
+                <h1 className="mb-8 text-2xl font-semibold leading-tight text-slate-100 md:text-4xl">
                     {q.question}
                 </h1>
 
-                <div className="flex flex-row">
-                    <div className="m-2 flex flex-col items-center">
-                        <button
-                            type="button"
-                            className="m-2 w-48 py-4 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm disabled:opacity-50"
-                            onClick={() => submitAnswer("A")}
-                            disabled={submitting}>
-                            {q.options.find(o => o.key === "A")?.value}
-                        </button>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    <button
+                        type="button"
+                        className="question-btn disabled:cursor-not-allowed"
+                        onClick={() => submitAnswer("A")}
+                        disabled={submitting}>
+                        <span className="mr-2 text-cyan-300">A.</span> {optionA}
+                    </button>
 
-                        <button
-                            type="button"
-                            className="m-2 w-48 py-4 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm disabled:opacity-50"
-                            onClick={() => submitAnswer("B")}
-                            disabled={submitting}>
-                            {q.options.find(o => o.key === "B")?.value}
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        className="question-btn disabled:cursor-not-allowed"
+                        onClick={() => submitAnswer("B")}
+                        disabled={submitting}>
+                        <span className="mr-2 text-cyan-300">B.</span> {optionB}
+                    </button>
 
-                    <div className="m-2 flex flex-col items-center">
-                        <button
-                            type="button"
-                            className="m-2 w-48 py-4 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm disabled:opacity-50"
-                            onClick={() => submitAnswer("C")}
-                            disabled={submitting}>
-                            {q.options.find(o => o.key === "C")?.value}
-                        </button>
+                    <button
+                        type="button"
+                        className="question-btn disabled:cursor-not-allowed"
+                        onClick={() => submitAnswer("C")}
+                        disabled={submitting}>
+                        <span className="mr-2 text-cyan-300">C.</span> {optionC}
+                    </button>
 
-                        <button
-                            type="button"
-                            className="m-2 w-48 py-4 rounded-md bg-gray-100 hover:bg-gray-200 text-lg font-medium text-gray-800 shadow-sm disabled:opacity-50"
-                            onClick={() => submitAnswer("D")}
-                            disabled={submitting}>
-                            {q.options.find(o => o.key === "D")?.value}
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        className="question-btn disabled:cursor-not-allowed"
+                        onClick={() => submitAnswer("D")}
+                        disabled={submitting}>
+                        <span className="mr-2 text-cyan-300">D.</span> {optionD}
+                    </button>
                 </div>
-            </div>
-
-            <div>
-                <h6 className="m-2 p-2 text-sm font-medium text-gray-600">
-                    Score: {score}/10
-                </h6>
             </div>
         </div>
     );

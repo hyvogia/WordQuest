@@ -4,7 +4,7 @@ export const users = [
     { username: "Carol", password: "carol123" }
 ];
 export const scores = [
-// example: { username: "Andrew", score: 0 }
+// { username: "Andrew", score: 0 }
 ];
 export const questions = [
     {

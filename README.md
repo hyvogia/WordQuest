@@ -1,6 +1,6 @@
 # Word Quest - Synonym Exercise 
 
-React + Node.js + MySQL. CS472 Web Dev Project.
+React + Node.js + MySQL
 
 ## Visuals
 
